@@ -3,510 +3,1485 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Molecular Clock Challenge</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Molecular Clock - Interactive Lesson</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            min-height: 100vh;
+            color: #1a237e;
         }
-        .screen {
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 25px 20px;
+            background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+            color: white;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 20px;
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-tab {
+            padding: 12px 20px;
+            border: none;
+            background: #e3f2fd;
+            color: #1565c0;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab:hover {
+            background: #bbdefb;
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+            color: white;
+        }
+
+        .nav-tab.completed::after {
+            content: ' \2713';
+            color: #4caf50;
+        }
+
+        .nav-tab.active.completed::after {
+            color: #a5d6a7;
+        }
+
+        /* Sections */
+        .section {
             display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            line-height: 1.7;
         }
-        #screen1 {
+
+        .section.active {
             display: block;
+            animation: fadeIn 0.4s ease;
         }
-        /* Simple animation for screen transitions */
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .screen {
-            animation: fadeIn 0.5s ease-in-out;
+
+        .section h2 {
+            color: #0d47a1;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #1565c0;
+            font-size: 1.6rem;
         }
-        /* New styles for the graphical cladogram */
-        .cladogram {
-            position: relative;
-            padding-left: 20px;
-            height: 250px;
+
+        .section h3 {
+            color: #1565c0;
+            margin: 25px 0 12px 0;
+            font-size: 1.25rem;
         }
-        .trunk {
-            position: absolute;
-            left: 0;
-            top: 10px;
-            height: 220px;
-            width: 3px;
-            background-color: #374151; /* gray-700 */
+
+        .section p {
+            margin-bottom: 12px;
+            color: #333;
         }
-        .branch {
-            position: absolute;
-            left: 0;
+
+        /* Info Boxes */
+        .info-box {
+            padding: 18px 20px;
+            border-radius: 10px;
+            margin: 18px 0;
+            border-left: 4px solid;
+        }
+
+        .info-box.blue {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-left-color: #1565c0;
+        }
+
+        .info-box.green {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-left-color: #4caf50;
+        }
+
+        .info-box.amber {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-left-color: #ff9800;
+        }
+
+        .info-box.purple {
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            border-left-color: #7b1fa2;
+        }
+
+        .info-box.red {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            border-left-color: #e53935;
+        }
+
+        /* Key Term Styling */
+        .key-term {
+            font-weight: bold;
+            color: #0d47a1;
+        }
+
+        /* Vocab Grid */
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .vocab-card {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #1565c0;
+        }
+
+        .vocab-term {
+            font-weight: bold;
+            color: #0d47a1;
+            font-size: 1.05rem;
+        }
+
+        .vocab-def {
+            color: #333;
+            margin-top: 5px;
+        }
+
+        /* Calculation Steps */
+        .calc-step {
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 18px;
+            margin: 15px 0;
+            transition: border-color 0.3s;
+        }
+
+        .calc-step.correct {
+            border-color: #4caf50;
+            background: #e8f5e9;
+        }
+
+        .calc-step.incorrect {
+            border-color: #e53935;
+            background: #ffebee;
+        }
+
+        .calc-step label {
+            display: block;
+            font-weight: bold;
+            color: #1565c0;
+            margin-bottom: 6px;
+            font-size: 1.05rem;
+        }
+
+        .calc-step .hint-text {
+            font-size: 0.92rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .calc-step input[type="text"] {
+            width: 100%;
+            max-width: 350px;
+            padding: 10px 14px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .calc-step input[type="text"]:focus {
+            outline: none;
+            border-color: #1565c0;
+        }
+
+        /* Radio Options */
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .radio-group label {
             display: flex;
             align-items: center;
-            height: 20px;
+            font-weight: normal;
+            color: #333;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background 0.2s;
         }
-        .branch-line {
-            height: 3px;
-            background-color: #374151; /* gray-700 */
-            border-radius: 2px;
+
+        .radio-group label:hover {
+            background: #e3f2fd;
         }
-        .branch-label {
-            padding-left: 10px;
+
+        .radio-group input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+            accent-color: #1565c0;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(21,101,192,0.3);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 4px 15px rgba(21,101,192,0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #43a047 0%, #2e7d32 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(46,125,50,0.3);
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 4px 15px rgba(46,125,50,0.4);
+        }
+
+        .btn-amber {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
+        }
+
+        .btn-purple {
+            background: linear-gradient(135deg, #7b1fa2 0%, #4a148c 100%);
+            color: white;
+        }
+
+        .btn-outline {
+            background: white;
+            color: #1565c0;
+            border: 2px solid #1565c0;
+        }
+
+        .btn-outline:hover {
+            background: #e3f2fd;
+        }
+
+        .btn-copy {
+            background: linear-gradient(135deg, #00897b 0%, #00695c 100%);
+            color: white;
+        }
+
+        .btn-copy:hover {
+            box-shadow: 0 4px 15px rgba(0,137,123,0.4);
+        }
+
+        /* Feedback */
+        .feedback {
+            padding: 15px 18px;
+            border-radius: 10px;
+            margin: 12px 0;
+            display: none;
             font-weight: 500;
         }
-        .branch-c { top: 30px; }  /* Most distant, longest branch */
-        .branch-b { top: 100px; } /* Middle */
-        .branch-a { top: 170px; } /* Most recent, shortest branch */
-        .human-line {
+
+        .feedback.correct {
+            display: block;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
+        }
+
+        .feedback.incorrect {
+            display: block;
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
+        }
+
+        .feedback.info {
+            display: block;
+            background: #fff3e0;
+            color: #e65100;
+            border: 1px solid #ffcc80;
+        }
+
+        /* Hint System */
+        .hint-btn {
+            background: none;
+            border: 2px solid #ff9800;
+            color: #f57c00;
+            padding: 6px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            margin-top: 8px;
+        }
+
+        .hint-btn:hover {
+            background: #fff3e0;
+        }
+
+        .hint-content {
+            display: none;
+            background: #fff3e0;
+            border-left: 3px solid #ff9800;
+            padding: 12px 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 10px;
+            color: #e65100;
+            font-size: 0.95rem;
+        }
+
+        .hint-content.visible {
+            display: block;
+        }
+
+        /* Practice Problem Card */
+        .problem-card {
+            background: #fafafa;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .problem-card h3 {
+            margin-top: 0;
+        }
+
+        .problem-card .answer-reveal {
+            display: none;
+            margin-top: 15px;
+        }
+
+        .problem-card .answer-reveal.visible {
+            display: block;
+        }
+
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+
+        .data-table th {
+            background: #1565c0;
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        .data-table td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .data-table tr:nth-child(even) {
+            background: #f5f5f5;
+        }
+
+        .data-table tr:hover {
+            background: #e3f2fd;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            margin: 20px 0;
+        }
+
+        .timeline::before {
+            content: '';
             position: absolute;
-            left: 0;
-            top: 230px;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: #1565c0;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -26px;
+            top: 5px;
+            width: 14px;
+            height: 14px;
+            background: #1565c0;
+            border-radius: 50%;
+            border: 3px solid #e3f2fd;
+        }
+
+        .timeline-date {
             font-weight: bold;
-            color: #1e40af; /* blue-800 */
+            color: #1565c0;
+            font-size: 1.05rem;
+        }
+
+        .timeline-text {
+            color: #333;
+            margin-top: 4px;
+        }
+
+        /* Formula Box */
+        .formula-box {
+            background: #263238;
+            color: #e0f7fa;
+            padding: 20px 25px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            margin: 18px 0;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        /* Quiz Section */
+        .quiz-question {
+            background: #fafafa;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 22px;
+            margin: 20px 0;
+        }
+
+        .quiz-question p.q-text {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.02rem;
+        }
+
+        .quiz-question .explanation {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 15px;
+            border-radius: 8px;
+        }
+
+        .quiz-question .explanation.visible {
+            display: block;
+        }
+
+        .quiz-question .explanation.correct-exp {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
+        }
+
+        .quiz-question .explanation.incorrect-exp {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
+        }
+
+        /* Copy Area */
+        .copy-area {
+            background: #f5f5f5;
+            border: 2px dashed #bdbdbd;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 100px;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 0.95rem;
+            color: #333;
+            white-space: pre-wrap;
+        }
+
+        .copy-success {
+            display: none;
+            color: #2e7d32;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .copy-success.visible {
+            display: block;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar .fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1565c0, #42a5f5);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        /* Portrait Card */
+        .portrait-card {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            background: linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 18px 0;
+            border-left: 4px solid #3f51b5;
+        }
+
+        .portrait-card .portrait-info {
+            flex: 1;
+        }
+
+        .portrait-card .portrait-name {
+            font-weight: bold;
+            font-size: 1.15rem;
+            color: #1a237e;
+            margin-bottom: 6px;
+        }
+
+        .portrait-card .portrait-details {
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        /* Textarea */
+        textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 80px;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #1565c0;
+        }
+
+        /* Section Navigation Buttons */
+        .section-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.6rem; }
+            .section { padding: 20px; }
+            .nav-tab { padding: 8px 14px; font-size: 0.85rem; }
+            .portrait-card { flex-direction: column; }
+            .btn { padding: 10px 20px; font-size: 0.9rem; }
         }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body>
 
-    <div class="max-w-4xl mx-auto my-8 p-6 bg-white rounded-xl shadow-lg">
+<div class="container">
+    <header>
+        <h1>The Molecular Clock</h1>
+        <p>An Interactive Lesson &mdash; AP &amp; IB Biology</p>
+    </header>
 
-        <!-- =================================== -->
-        <!-- SCREEN 1: THE "CASE FILE"           -->
-        <!-- =================================== -->
-        <div id="screen1" class="screen">
-            <h1 class="text-3xl font-bold text-blue-700 mb-2">The Molecular Clock Challenge 🧬</h1>
-            <p class="text-lg text-gray-600 mb-6">You are a molecular biologist. Your team has just sequenced a 1,000 bp segment of a homologous pseudogene from three different species to determine their relationship to humans. Your job is to use this data to calculate <strong>when</strong> each species shared a common ancestor with humans and then build the correct phylogenetic tree.</p>
-            
-            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-md">
-                <h3 class="text-xl font-semibold text-blue-800 mb-2">Reference Data (The "Givens")</h3>
-                <ul class="list-disc list-inside space-y-1 text-gray-700">
-                    <li><strong>Sequence Length:</strong> 1,000 bp</li>
-                    <li><strong>Known Mutation Rate:</strong> 1 x 10<sup>-9</sup> mutations per bp, per year (or 0.000000001)</li>
-                    <li><strong>Species to Analyze:</strong> Mouse Lemur, Golden Tamarin, Dog</li>
-                </ul>
-            </div>
-            <div class="mt-8 text-center flex flex-wrap justify-center gap-4">
-                <button onclick="showScreen('screen2')" class="bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-blue-700 transition-transform transform hover:scale-105">Start the Analysis</button>
-                <button onclick="showScreen('screen4', 'screen1')" class="bg-gray-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-gray-700 transition-transform transform hover:scale-105">Concept Check</button>
-                <button onclick="showScreen('screen5', 'screen1')" class="bg-teal-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-teal-700 transition-transform transform hover:scale-105">Molecular Clock Primer</button>
-            </div>
-        </div>
-
-        <!-- =================================== -->
-        <!-- SCREEN 2: THE "WORKBENCH"           -->
-        <!-- =================================== -->
-        <div id="screen2" class="screen">
-            <h2 id="species-title" class="text-2xl font-bold text-indigo-700 mb-2">Species 1 of 3: Mouse Lemur</h2>
-            <div id="species-data" class="bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-md text-gray-700 mb-6">After aligning the 1,000 bp sequences, you found <strong>150 mutations</strong> between the human and mouse lemur genes.</div>
-            
-            <h3 class="text-xl font-semibold mb-4">Interactive Calculation</h3>
-            <p class="text-gray-600 mb-4">Fill in the blanks to complete the calculation.</p>
-
-            <div class="space-y-4">
-                <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                    <strong class="text-gray-700">Step 1: Find the "Sequence Rate"</strong> (mutations/sequence/year)
-                    <p class="text-sm text-gray-500 mt-1 mb-2">(1.0 x 10<sup>-9</sup>) &times; (1,000 bp)</p>
-                    <input type="text" id="calc_step1" placeholder="Enter calculated value" class="mt-1 block w-full md:w-1/2 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                </div>
-
-                <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                    <strong class="text-gray-700">Step 2: Find the "Clock Tick Rate"</strong> (years/mutation)
-                     <p class="text-sm text-gray-500 mt-1 mb-2">1 / (Answer from Step 1)</p>
-                    <input type="text" id="calc_step2" placeholder="Enter calculated value" class="mt-1 block w-full md:w-1/2 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                </div>
-
-                <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                    <strong class="text-gray-700">Step 3: Calculate Total Divergence Time</strong> (total years)
-                    <p class="text-sm text-gray-500 mt-1 mb-2">(Answer from Step 2) &times; (<span id="mutation_count_label">150</span> mutations)</p>
-                    <input type="text" id="calc_step3" placeholder="Enter calculated value" class="mt-1 block w-full md:w-1/2 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                </div>
-
-                <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                    <strong class="text-gray-700">Step 4: Find the Common Ancestor</strong>
-                    <p class="text-gray-600 my-2">The "Total Divergence Time" represents time along <strong>both</strong> lineages. What must you do to find the date of the single common ancestor?</p>
-                    <div class="flex flex-col space-y-2">
-                        <label class="flex items-center"><input type="radio" name="step4_op" value="multiply" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"> <span class="ml-2">Multiply by 2</span></label>
-                        <label class="flex items-center"><input type="radio" name="step4_op" value="divide" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"> <span class="ml-2">Divide by 2</span></label>
-                        <label class="flex items-center"><input type="radio" name="step4_op" value="nothing" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"> <span class="ml-2">Do nothing</span></label>
-                    </div>
-                </div>
-
-                 <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                    <strong class="text-gray-700">Final Calculation</strong>
-                    <p class="text-sm text-gray-500 mt-1 mb-2">(Answer from Step 3) / 2</p>
-                    <input type="text" id="calc_step4" placeholder="Enter final answer in years" class="mt-1 block w-full md:w-1/2 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                </div>
-            </div>
-
-            <div class="mt-6 flex flex-wrap gap-2">
-                <button onclick="resetApp()" class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-gray-600 transition">Back to Start</button>
-                <button onclick="checkCalculation()" class="bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-green-700 transition">Check Answers</button>
-                <button id="nextSpeciesButton" onclick="nextSpecies()" class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-indigo-700 transition" style="display:none;">Continue</button>
-            </div>
-
-            <div id="feedback-calc" class="mt-4 p-4 rounded-md" style="display:none;"></div>
-        </div>
-
-        <!-- =================================== -->
-        <!-- SCREEN 3: THE "CLADOGRAM"           -->
-        <!-- =================================== -->
-        <div id="screen3" class="screen">
-            <h2 class="text-2xl font-bold text-purple-700 mb-2">Final Step: Build the Phylogenetic Tree</h2>
-            <p class="text-gray-600 mb-4">You have your divergence dates:</p>
-            <div class="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-md text-gray-700 mb-6">
-                 <ul class="list-disc list-inside space-y-1">
-                    <li><strong>Dog:</strong> 95,000,000 Years Ago</li>
-                    <li><strong>Mouse Lemur:</strong> 75,000,000 Years Ago</li>
-                    <li><strong>Golden Tamarin:</strong> 43,000,000 Years Ago</li>
-                </ul>
-            </div>
-
-            <p class="text-gray-600 mb-4">Based on these dates, label the cladogram correctly. Which species is the most distant relative (C)? Which is the closest (A)?</p>
-
-            <div class="md:flex md:items-start md:space-x-8">
-                <div class="flex-shrink-0 mb-6 md:mb-0">
-                    <div class="p-4 bg-gray-50 rounded-lg border border-gray-200 w-full md:w-72">
-                        <div class="mb-4">
-                            <label for="branchA" class="block font-medium text-gray-700">Branch A (Most Recent)</label>
-                            <select id="branchA" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500">
-                                <option value="">-- Select Species --</option>
-                                <option value="Dog">Dog</option>
-                                <option value="Lemur">Mouse Lemur</option>
-                                <option value="Tamarin">Golden Tamarin</option>
-                            </select>
-                        </div>
-                        <div class="mb-4">
-                            <label for="branchB" class="block font-medium text-gray-700">Branch B</label>
-                            <select id="branchB" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500">
-                                <option value="">-- Select Species --</option>
-                                <option value="Dog">Dog</option>
-                                <option value="Lemur">Mouse Lemur</option>
-                                <option value="Tamarin">Golden Tamarin</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="branchC" class="block font-medium text-gray-700">Branch C (Most Distant)</label>
-                            <select id="branchC" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500">
-                                <option value="">-- Select Species --</option>
-                                <option value="Dog">Dog</option>
-                                <option value="Lemur">Mouse Lemur</option>
-                                <option value="Tamarin">Golden Tamarin</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                 <!-- A new graphical cladogram -->
-                <div class="flex-grow p-4 mt-4 md:mt-0">
-                    <div class="cladogram">
-                        <div class="trunk"></div>
-                        <div class="branch branch-c">
-                            <div class="branch-line" style="width: 150px;"></div>
-                            <div class="branch-label text-gray-700">(C) Diverged 95 MYA</div>
-                        </div>
-                        <div class="branch branch-b">
-                            <div class="branch-line" style="width: 100px;"></div>
-                            <div class="branch-label text-gray-700">(B) Diverged 75 MYA</div>
-                        </div>
-                        <div class="branch branch-a">
-                            <div class="branch-line" style="width: 50px;"></div>
-                            <div class="branch-label text-gray-700">(A) Diverged 43 MYA</div>
-                        </div>
-                        <div class="human-line">→ Human Lineage</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-8">
-                <h3 class="text-xl font-semibold text-purple-800 mb-2">Explain Your Reasoning</h3>
-                <p class="text-gray-600 mb-4">Explain <strong>why</strong> your arrangement is correct. How does the number of mutations relate to how <strong>recently</strong> a species shares a common ancestor with humans?</p>
-                <textarea id="explanation-box" placeholder="Type your explanation here..." class="w-full h-28 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500"></textarea>
-            </div>
-            
-            <div class="mt-6 flex flex-wrap justify-center gap-4">
-                <button onclick="resetApp()" class="bg-gray-500 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-gray-600 transition">Back to Start</button>
-                <button onclick="checkCladogram()" class="bg-purple-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-purple-700 transition">Submit Final Lab</button>
-                 <button onclick="showScreen('screen4', 'screen3')" class="bg-gray-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-gray-700 transition">Concept Check</button>
-            </div>
-            <div id="feedback-final" class="mt-4 p-4 rounded-md" style="display:none;"></div>
-        </div>
-        
-        <!-- =================================== -->
-        <!-- SCREEN 4: CONCEPT CHECK             -->
-        <!-- =================================== -->
-        <div id="screen4" class="screen">
-            <h2 class="text-2xl font-bold text-teal-700 mb-4">AP/IB Style Concept Check</h2>
-            
-            <!-- Question 1 -->
-            <div class="p-4 bg-gray-50 rounded-lg border border-gray-200 mb-6">
-                <p class="font-semibold mb-2">1. A scientist wants to construct a molecular clock to estimate the divergence of several mammal species over the last 20 million years. Which type of DNA sequence would provide the most reliable data?</p>
-                <div class="flex flex-col space-y-2" id="q1_options">
-                    <label class="flex items-center"><input type="radio" name="q1" value="A" class="h-4 w-4 text-teal-600 border-gray-300 focus:ring-teal-500"> <span class="ml-2">A) The exons of an essential gene like actin, because its function is critical.</span></label>
-                    <label class="flex items-center"><input type="radio" name="q1" value="B" class="h-4 w-4 text-teal-600 border-gray-300 focus:ring-teal-500"> <span class="ml-2">B) A pseudogene that is no longer transcribed, because it can accumulate mutations without selective pressure.</span></label>
-                    <label class="flex items-center"><input type="radio" name="q1" value="C" class="h-4 w-4 text-teal-600 border-gray-300 focus:ring-teal-500"> <span class="ml-2">C) The gene for ribosomal RNA (rRNA), because it is highly conserved across all life.</span></label>
-                    <label class="flex items-center"><input type="radio" name="q1" value="D" class="h-4 w-4 text-teal-600 border-gray-300 focus:ring-teal-500"> <span class="ml-2">D) The middle region of an intron, because it is non-coding and thus not under selection.</span></label>
-                </div>
-                <button onclick="checkQuestion(1, 'B')" class="mt-4 bg-teal-600 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-teal-700 transition">Check Answer</button>
-                <div id="q1_explanation" class="mt-4 p-3 rounded-md bg-teal-50 text-teal-900 border border-teal-200" style="display:none;"></div>
-            </div>
-
-            <!-- Question 2 -->
-            <div class="p-4 bg-gray-50 rounded-lg border border-gray-200 mb-6">
-                <p class="font-semibold mb-2">2. The table shows the number of nucleotide differences between a common ancestor and three descendant species in a selectively neutral DNA segment. Which statement is the most valid conclusion?</p>
-                <table class="w-full my-2 text-left border-collapse">
-                    <thead><tr><th class="border p-2">Comparison</th><th class="border p-2">Differences</th></tr></thead>
-                    <tbody>
-                        <tr><td class="border p-2">Ancestor vs. Species A</td><td class="border p-2">4</td></tr>
-                        <tr><td class="border p-2">Ancestor vs. Species B</td><td class="border p-2">28</td></tr>
-                        <tr><td class="border p-2">Ancestor vs. Species C</td><td class="border p-2">12</td></tr>
-                    </tbody>
-                </table>
-                <div class="flex flex-col space-y-2" id="q2_options">
-                    <label class="flex items-center"><input type="radio" name="q2" value="A" class="h-4 w-4 text-teal-600 border-gray-300 focus:ring-teal-500"> <span class="ml-2">A) Species B is the most recently diverged from the ancestor.</span></label>
-                    <label class="flex items-center"><input type="radio" name="q2" value="B" class="h-4 w-4 text-teal-600 border-gray-300 focus:ring-teal-500"> <span class="ml-2">B) Species A and C are more closely related to each other than to Species B.</span></label>
-                    <label class="flex items-center"><input type="radio" name="q2" value="C" class="h-4 w-4 text-teal-600 border-gray-300 focus:ring-teal-500"> <span class="ml-2">C) Species A is the most closely related to the common ancestor.</span></label>
-                    <label class="flex items-center"><input type="radio" name="q2" value="D" class="h-4 w-4 text-teal-600 border-gray-300 focus:ring-teal-500"> <span class="ml-2">D) The rate of mutation was fastest in the lineage leading to Species B.</span></label>
-                </div>
-                <button onclick="checkQuestion(2, 'C')" class="mt-4 bg-teal-600 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-teal-700 transition">Check Answer</button>
-                <div id="q2_explanation" class="mt-4 p-3 rounded-md bg-teal-50 text-teal-900 border border-teal-200" style="display:none;"></div>
-            </div>
-
-            <div class="mt-8 text-center flex flex-wrap justify-center gap-4">
-                <button onclick="resetApp()" class="bg-gray-500 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-gray-600 transition">Back to Start</button>
-                <button id="backButton" onclick="" class="bg-gray-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-gray-700 transition">Back to Previous Page</button>
-                <button onclick="showScreen('screen5', 'screen4')" class="bg-teal-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-teal-700 transition">Molecular Clock Primer</button>
-            </div>
-        </div>
-
-        <!-- =================================== -->
-        <!-- SCREEN 5: MOLECULAR CLOCK PRIMER    -->
-        <!-- =================================== -->
-        <div id="screen5" class="screen">
-            <h2 class="text-2xl font-bold text-teal-700 mb-4">A Primer on Molecular Clocks</h2>
-            
-            <div class="space-y-6 text-gray-700">
-                <div>
-                    <h3 class="text-xl font-semibold text-teal-800 mb-2">The Core Principle: Selective Pressure</h3>
-                    <p>The most reliable molecular clocks use sequences of DNA that are not being "seen" by natural selection. We want regions that are <strong>selectively neutral</strong>, meaning a mutation there has no effect on the organism's survival or reproduction.</p>
-                    <p class="mt-2">Why? Because natural selection is not constant; it can speed up or slow down. Neutral mutations, however, are just random copying errors that occur at a relatively constant rate. By counting them, we are measuring <strong>time</strong>, not adaptation.</p>
-                </div>
-
-                <div>
-                    <h3 class="text-xl font-semibold text-teal-800 mb-2">Comparing the "Clocks"</h3>
-                    <p>Different parts of the genome accumulate mutations at different speeds, making them useful for measuring different evolutionary timescales.</p>
-                    
-                    <ul class="mt-4 space-y-4 list-disc list-inside">
-                        <li><strong>Pseudogenes (The "Gold Standard"):</strong> These are "broken" or non-functional genes. Since they produce no protein, they are under almost zero selective pressure. They accumulate mutations at the fastest, most predictable rate, making them ideal for comparing <strong>closely related species</strong>.</li>
-                        <li><strong>Introns (A "Fast" Clock):</strong> These are non-coding sequences *within* a gene that are spliced out before a protein is made. While mostly neutral, small regions essential for splicing are conserved. Biologists use the middle, neutral parts of introns as a fast-ticking clock.</li>
-                        <li><strong>Exons (The "Slowest" Clock):</strong> These are the coding parts of a gene. They are under high selective pressure because a mutation could change the final protein.
-                            <ul class="list-['-_'] list-inside ml-4 mt-2 space-y-2">
-                                <li><em>Synonymous ("Silent") Mutations:</em> A base change that does not alter the resulting amino acid. These are more neutral and form a medium-speed clock.</li>
-                                <li><em>Nonsynonymous Mutations:</em> A base change that alters the amino acid. These are often harmful and are removed by selection. These sites change very slowly and are used for measuring <strong>deep evolutionary time</strong> (e.g., comparing humans to fish).</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h3 class="text-xl font-semibold text-teal-800 mb-2">Summary Table</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr>
-                                    <th class="border p-2 bg-teal-50">DNA Region</th>
-                                    <th class="border p-2 bg-teal-50">Selective Pressure</th>
-                                    <th class="border p-2 bg-teal-50">"Clock Speed"</th>
-                                    <th class="border p-2 bg-teal-50">Best for Measuring...</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr><td class="border p-2">Pseudogene</td><td class="border p-2">Almost None</td><td class="border p-2 font-semibold text-red-600">Fastest</td><td class="border p-2">Recent Divergence</td></tr>
-                                <tr><td class="border p-2">Intron (middle)</td><td class="border p-2">Very Low</td><td class="border p-2 font-semibold text-orange-600">Fast</td><td class="border p-2">Recent Divergence</td></tr>
-                                <tr><td class="border p-2">Exon (Synonymous)</td><td class="border p-2">Low-Medium</td><td class="border p-2 font-semibold text-yellow-600">Medium</td><td class="border p-2">Medium Divergence</td></tr>
-                                <tr><td class="border p-2">Exon (Nonsynonymous)</td><td class="border p-2">Very High</td><td class="border p-2 font-semibold text-blue-600">Slowest</td><td class="border p-2">Deep Divergence</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-8 text-center">
-                <button id="primerBackButton" onclick="" class="bg-gray-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-gray-700 transition">Back to Previous Page</button>
-            </div>
-        </div>
-
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+        <button class="nav-tab active" onclick="showSection(0)">Introduction</button>
+        <button class="nav-tab" onclick="showSection(1)">Guided Lesson</button>
+        <button class="nav-tab" onclick="showSection(2)">Practice Problems</button>
+        <button class="nav-tab" onclick="showSection(3)">AP/IB Concept Check</button>
     </div>
 
+    <!-- ============================================ -->
+    <!-- SECTION 0: INTRODUCTION                      -->
+    <!-- ============================================ -->
+    <div class="section active" id="section-0">
+        <h2>Introduction: Telling Time with DNA</h2>
 
-    <!-- =================================== -->
-    <!-- JAVASCRIPT: THE "BRAINS"            -->
-    <!-- =================================== -->
-    <script>
-        // --- Global Data ---
-        const speciesData = [
-            { name: "Mouse Lemur", mutations: 150, step1: "1e-6", step2: "1000000", step3: "150000000", step4: "75000000" },
-            { name: "Golden Tamarin", mutations: 86, step1: "1e-6", step2: "1000000", step3: "86000000", step4: "43000000" },
-            { name: "Dog", mutations: 190, step1: "1e-6", step2: "1000000", step3: "190000000", step4: "95000000" }
-        ];
+        <p>How do biologists determine <em>when</em> two species shared a common ancestor, especially when the fossil record is incomplete? The answer lies in one of molecular biology's most powerful tools: <span class="key-term">the molecular clock</span>.</p>
 
-        let currentSpeciesIndex = 0;
+        <p>The core idea is elegant: DNA accumulates mutations over time. If mutations accumulate at a roughly constant rate in certain regions of the genome, then the <strong>number of genetic differences</strong> between two species can serve as a "clock" that tells us how long ago they diverged from their last common ancestor.</p>
 
-        // --- Navigation ---
-        function showScreen(screenId, returnScreenId) {
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.style.display = 'none';
-            });
-            const targetScreen = document.getElementById(screenId);
-            if (targetScreen) {
-                 targetScreen.style.display = 'block';
-            }
-            // If going to a screen with a dynamic back button, set its destination
-            if (screenId === 'screen4' && returnScreenId) {
-                document.getElementById('backButton').onclick = () => showScreen(returnScreenId);
-            }
-             if (screenId === 'screen5' && returnScreenId) {
-                document.getElementById('primerBackButton').onclick = () => showScreen(returnScreenId);
-            }
+        <h3>A Brief History</h3>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-date">1962 &ndash; The Idea Is Born</div>
+                <div class="timeline-text">Chemist <strong>Linus Pauling</strong> and biologist <strong>Emile Zuckerkandl</strong> compared hemoglobin protein sequences across species. They noticed something remarkable: the number of amino acid differences between species correlated with how long ago the fossil record indicated they diverged. They proposed the concept of a <span class="key-term">molecular clock</span>&mdash;the idea that molecular changes accumulate at a roughly constant rate and can be used to estimate evolutionary time.</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">1967 &ndash; Neutral Theory Provides the Mechanism</div>
+                <div class="timeline-text">Japanese geneticist <strong>Motoo Kimura</strong> proposed the <span class="key-term">neutral theory of molecular evolution</span>, arguing that most mutations at the molecular level are selectively neutral&mdash;neither helpful nor harmful. These neutral mutations drift through populations at a statistically predictable rate, providing the theoretical foundation for why a molecular clock could work.</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">1967 &ndash; Allan Wilson Shakes the Family Tree</div>
+                <div class="timeline-text">New Zealand-born biochemist <strong>Allan Wilson</strong> and his student <strong>Vincent Sarich</strong> at UC Berkeley used molecular clock methods to study primate evolution. By comparing blood proteins (albumins) across primates, they estimated that <strong>humans and African apes diverged only about 5 million years ago</strong>&mdash;far more recently than the 15&ndash;25 million years that most anthropologists believed at the time. This was deeply controversial but ultimately confirmed by later fossil and DNA evidence.</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">1987 &ndash; "Mitochondrial Eve"</div>
+                <div class="timeline-text">Wilson's lab later analyzed mitochondrial DNA from women across the globe. Using the molecular clock, they traced all living humans' maternal lineage back to a single woman in Africa roughly 200,000 years ago&mdash;a finding the press dubbed <strong>"Mitochondrial Eve."</strong> This work helped establish the Out-of-Africa model of human evolution.</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">Today</div>
+                <div class="timeline-text">Modern molecular clocks use sophisticated statistical models, whole-genome data, and multiple calibration points from the fossil record. They remain one of the most important tools in evolutionary biology, especially for lineages with poor fossil records.</div>
+            </div>
+        </div>
+
+        <div class="portrait-card">
+            <div class="portrait-info">
+                <div class="portrait-name">Allan Wilson (1934&ndash;1991)</div>
+                <div class="portrait-details">Born in Ngaruawahia, New Zealand, Allan Wilson became one of the most influential molecular biologists of the 20th century. His use of molecular clock techniques to study primate evolution fundamentally changed our understanding of human origins. He was awarded a MacArthur Fellowship in 1986. Wilson died of leukemia in 1991 at age 56, but his methods and findings continue to shape evolutionary biology. His willingness to challenge established thinking&mdash;using molecular data when the anthropological community relied almost exclusively on fossils&mdash;is a powerful example of how new evidence can overturn long-held assumptions.</div>
+            </div>
+        </div>
+
+        <h3>Why Does It Work?</h3>
+
+        <p>The molecular clock depends on a critical concept: <span class="key-term">selective neutrality</span>. Not all parts of the genome are equal.</p>
+
+        <div class="vocab-grid">
+            <div class="vocab-card">
+                <div class="vocab-term">Pseudogenes</div>
+                <div class="vocab-def">"Broken" genes that no longer produce functional proteins. With almost no selective pressure, they accumulate mutations at a fast, steady rate&mdash;the "gold standard" clock.</div>
+            </div>
+            <div class="vocab-card">
+                <div class="vocab-term">Introns</div>
+                <div class="vocab-def">Non-coding regions within genes that are spliced out before translation. Mostly neutral, their middle portions make a good fast-ticking clock.</div>
+            </div>
+            <div class="vocab-card">
+                <div class="vocab-term">Synonymous (Silent) Mutations</div>
+                <div class="vocab-def">Changes in a codon that do NOT change the amino acid produced (due to redundancy in the genetic code). These are relatively neutral and provide a medium-speed clock.</div>
+            </div>
+            <div class="vocab-card">
+                <div class="vocab-term">Nonsynonymous Mutations</div>
+                <div class="vocab-def">Changes in a codon that DO alter the amino acid. These are often removed by natural selection, so they accumulate very slowly&mdash;useful only for deep evolutionary time.</div>
+            </div>
+        </div>
+
+        <div class="info-box blue">
+            <strong>Key Principle:</strong> The most reliable molecular clocks use DNA regions that are <strong>selectively neutral</strong>. Neutral mutations are not "seen" by natural selection, so they accumulate at a roughly constant rate&mdash;like the steady ticking of a clock. Regions under strong selective pressure change at irregular rates and make poor clocks.
+        </div>
+
+        <h3>Assumptions and Limitations</h3>
+        <p>Like any model, the molecular clock rests on assumptions that are not always perfectly met:</p>
+        <ul style="margin: 10px 0 10px 25px; color: #333;">
+            <li style="margin-bottom: 8px;"><strong>Constant mutation rate:</strong> The clock assumes mutations accumulate at a steady rate. In reality, rates can vary somewhat between lineages (e.g., organisms with shorter generation times may accumulate mutations faster).</li>
+            <li style="margin-bottom: 8px;"><strong>Calibration required:</strong> Molecular clocks need at least one known divergence date (usually from the fossil record) to "set" the clock. The accuracy of the clock depends on the accuracy of this calibration.</li>
+            <li style="margin-bottom: 8px;"><strong>Selective neutrality:</strong> The clock works best in regions free from natural selection. Strong selection can speed up or slow down changes in unpredictable ways.</li>
+        </ul>
+
+        <div class="section-nav">
+            <button class="btn btn-primary" onclick="showSection(1)">Begin the Guided Lesson &rarr;</button>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- SECTION 1: GUIDED LESSON                     -->
+    <!-- ============================================ -->
+    <div class="section" id="section-1">
+        <h2>Guided Lesson: How to Calculate a Molecular Clock</h2>
+
+        <p>Let's walk through a molecular clock calculation step by step. We will use a realistic example to learn the method, and then you will apply it on your own in the Practice section.</p>
+
+        <div class="info-box blue">
+            <strong>Scenario:</strong> You are a molecular biologist studying the evolutionary relationship between <strong>humans</strong> and <strong>gorillas</strong>. You have sequenced a <strong>1,000 base-pair (bp)</strong> segment of a homologous pseudogene from both species.  After aligning the sequences, you count <strong>16 nucleotide differences</strong>. A well-established fossil calibration point gives you a known mutation rate of <strong>1 &times; 10<sup>-9</sup> mutations per base pair per year</strong>.
+        </div>
+
+        <h3>The Formula</h3>
+        <div class="formula-box">
+            Divergence Time = Number of Differences &divide; (2 &times; Mutation Rate &times; Sequence Length)
+        </div>
+        <p>Why divide by 2? Because mutations accumulate along <strong>both</strong> lineages after they split from the common ancestor. The total number of differences represents changes on <em>both</em> branches of the tree, so we divide by 2 to get the time back to the single common ancestor.</p>
+
+        <h3>Step-by-Step Walkthrough</h3>
+        <p>Fill in each step below. The lesson will check your work as you go.</p>
+
+        <div class="progress-bar"><div class="fill" id="lesson-progress" style="width: 0%"></div></div>
+
+        <!-- Step 1 -->
+        <div class="calc-step" id="lesson-step-1">
+            <label>Step 1: Identify Your Given Values</label>
+            <div class="hint-text">What are the three values given in the scenario above?</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px;">
+                <div>
+                    <span style="font-size:0.9rem; color:#666;">Number of differences:</span><br>
+                    <input type="text" id="ls1-diffs" placeholder="e.g., 16">
+                </div>
+                <div>
+                    <span style="font-size:0.9rem; color:#666;">Sequence length (bp):</span><br>
+                    <input type="text" id="ls1-length" placeholder="e.g., 1000">
+                </div>
+                <div>
+                    <span style="font-size:0.9rem; color:#666;">Mutation rate (per bp per year):</span><br>
+                    <input type="text" id="ls1-rate" placeholder="e.g., 1e-9">
+                </div>
+            </div>
+            <br>
+            <button class="btn btn-success" onclick="checkLessonStep(1)">Check Step 1</button>
+            <div class="feedback" id="ls1-fb"></div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="calc-step" id="lesson-step-2" style="opacity: 0.5; pointer-events: none;">
+            <label>Step 2: Calculate the Sequence Mutation Rate</label>
+            <div class="hint-text">Multiply the per-bp mutation rate by the sequence length to find how many mutations accumulate <em>per year in the entire sequence</em>.</div>
+            <div class="formula-box" style="font-size: 0.95rem; text-align: left;">
+                Sequence Rate = Mutation Rate &times; Sequence Length<br>
+                Sequence Rate = (1 &times; 10<sup style="color:#80deea;">-9</sup>) &times; (1,000)
+            </div>
+            <input type="text" id="ls2-answer" placeholder="Sequence rate (mutations/sequence/year)">
+            <br><br>
+            <button class="btn btn-success" onclick="checkLessonStep(2)">Check Step 2</button>
+            <div class="feedback" id="ls2-fb"></div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="calc-step" id="lesson-step-3" style="opacity: 0.5; pointer-events: none;">
+            <label>Step 3: Calculate Total Divergence Time</label>
+            <div class="hint-text">Divide the number of differences by the sequence rate. This gives the <strong>total</strong> time for mutations to accumulate on <em>both</em> lineages combined.</div>
+            <div class="formula-box" style="font-size: 0.95rem; text-align: left;">
+                Total Divergence = Number of Differences &divide; Sequence Rate<br>
+                Total Divergence = 16 &divide; (your answer from Step 2)
+            </div>
+            <input type="text" id="ls3-answer" placeholder="Total divergence time (years)">
+            <br><br>
+            <button class="btn btn-success" onclick="checkLessonStep(3)">Check Step 3</button>
+            <div class="feedback" id="ls3-fb"></div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="calc-step" id="lesson-step-4" style="opacity: 0.5; pointer-events: none;">
+            <label>Step 4: Find the Time to the Common Ancestor</label>
+            <div class="hint-text">The total divergence time covers <strong>both</strong> branches. What must you do to find the date of the common ancestor?</div>
+            <div class="radio-group">
+                <label><input type="radio" name="ls4-op" value="multiply"> Multiply by 2 (mutations only accumulated on one branch)</label>
+                <label><input type="radio" name="ls4-op" value="divide"> Divide by 2 (mutations accumulated on both branches)</label>
+                <label><input type="radio" name="ls4-op" value="nothing"> Do nothing (the total already represents one branch)</label>
+            </div>
+            <button class="btn btn-success" onclick="checkLessonStep(4)">Check Step 4</button>
+            <div class="feedback" id="ls4-fb"></div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="calc-step" id="lesson-step-5" style="opacity: 0.5; pointer-events: none;">
+            <label>Step 5: Final Answer</label>
+            <div class="hint-text">Take your Total Divergence Time and divide by 2.</div>
+            <div class="formula-box" style="font-size: 0.95rem; text-align: left;">
+                Time to Common Ancestor = Total Divergence &divide; 2
+            </div>
+            <input type="text" id="ls5-answer" placeholder="Time to common ancestor (years)">
+            <br><br>
+            <button class="btn btn-success" onclick="checkLessonStep(5)">Check Step 5</button>
+            <div class="feedback" id="ls5-fb"></div>
+        </div>
+
+        <div class="info-box green" id="lesson-complete" style="display:none;">
+            <strong>Excellent work!</strong> You calculated that humans and gorillas shared a common ancestor approximately <strong>8 million years ago</strong>. This aligns with molecular estimates, though the current best estimate using more sophisticated methods is approximately 8&ndash;10 MYA. You now understand the core molecular clock method. Time to practice on your own!
+        </div>
+
+        <div class="section-nav">
+            <button class="btn btn-outline" onclick="showSection(0)">&larr; Introduction</button>
+            <button class="btn btn-primary" onclick="showSection(2)">Practice Problems &rarr;</button>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- SECTION 2: PRACTICE PROBLEMS                 -->
+    <!-- ============================================ -->
+    <div class="section" id="section-2">
+        <h2>Practice Problems</h2>
+        <p>Apply what you learned to these two scenarios. Each has hints available if you get stuck, and you can reveal the answer after attempting it. <strong>Write your reasoning in the text box</strong>&mdash;you'll be able to copy all your answers at the end.</p>
+
+        <!-- PROBLEM 1: HOMINIDAE -->
+        <div class="problem-card" id="problem-1">
+            <h3>Problem 1: The Great Ape Family (Hominidae)</h3>
+            <p>One of the most important questions in human evolution is: <em>When did we last share a common ancestor with our closest living relatives?</em></p>
+
+            <div class="info-box purple">
+                <strong>Scenario:</strong> Your research team has sequenced a <strong>2,000 bp</strong> segment of a homologous pseudogene from humans and four other living hominids. The calibrated mutation rate for this region is <strong>1 &times; 10<sup>-9</sup> mutations per bp per year</strong>. After aligning the sequences, you counted the following differences from the human sequence:
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr><th>Species</th><th>Differences from Human (out of 2,000 bp)</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Chimpanzee</td><td>24</td></tr>
+                    <tr><td>Bonobo</td><td>24</td></tr>
+                    <tr><td>Gorilla</td><td>32</td></tr>
+                    <tr><td>Orangutan</td><td>54</td></tr>
+                </tbody>
+            </table>
+
+            <p><strong>Calculate the estimated divergence time (time to last common ancestor) for each species from humans.</strong></p>
+
+            <div class="calc-step">
+                <label>Chimpanzee: Divergence time (years ago)</label>
+                <input type="text" id="p1-chimp" placeholder="Your answer">
+            </div>
+            <div class="calc-step">
+                <label>Bonobo: Divergence time (years ago)</label>
+                <input type="text" id="p1-bonobo" placeholder="Your answer">
+            </div>
+            <div class="calc-step">
+                <label>Gorilla: Divergence time (years ago)</label>
+                <input type="text" id="p1-gorilla" placeholder="Your answer">
+            </div>
+            <div class="calc-step">
+                <label>Orangutan: Divergence time (years ago)</label>
+                <input type="text" id="p1-orangutan" placeholder="Your answer">
+            </div>
+
+            <p style="margin-top:15px;"><strong>Based on your calculations, which species is our closest living relative? Explain what the chimp and bonobo results tell us.</strong></p>
+            <textarea id="p1-explain" placeholder="Write your reasoning here..."></textarea>
+
+            <div style="margin-top: 12px;">
+                <button class="btn btn-success" onclick="checkProblem1()">Check My Answers</button>
+                <button class="hint-btn" onclick="toggleHint('p1-hint-1')">Hint 1</button>
+                <button class="hint-btn" onclick="toggleHint('p1-hint-2')">Hint 2</button>
+                <button class="hint-btn" onclick="toggleHint('p1-hint-3')">Hint 3</button>
+            </div>
+
+            <div class="hint-content" id="p1-hint-1">
+                <strong>Hint 1:</strong> Remember the formula: Divergence Time = Differences &divide; (2 &times; Rate &times; Length). Your rate is 1 &times; 10<sup>-9</sup> and your length is 2,000 bp.
+            </div>
+            <div class="hint-content" id="p1-hint-2">
+                <strong>Hint 2:</strong> First calculate the denominator: 2 &times; (1 &times; 10<sup>-9</sup>) &times; 2,000 = 4 &times; 10<sup>-6</sup> = 0.000004. Then divide each species' differences by that number.
+            </div>
+            <div class="hint-content" id="p1-hint-3">
+                <strong>Hint 3:</strong> For chimpanzee: 24 &divide; 0.000004 = 6,000,000 years. Notice that chimps and bonobos have the <em>same</em> number of differences from us. What does that tell you about when the human lineage split from the chimp/bonobo lineage?
+            </div>
+
+            <div class="feedback" id="p1-fb"></div>
+
+            <div class="answer-reveal" id="p1-answer">
+                <div class="info-box green">
+                    <strong>Answers:</strong><br>
+                    <strong>Chimpanzee:</strong> 24 &divide; (2 &times; 10<sup>-9</sup> &times; 2,000) = 24 &divide; 0.000004 = <strong>6,000,000 years ago (6 MYA)</strong><br>
+                    <strong>Bonobo:</strong> 24 &divide; 0.000004 = <strong>6,000,000 years ago (6 MYA)</strong><br>
+                    <strong>Gorilla:</strong> 32 &divide; 0.000004 = <strong>8,000,000 years ago (8 MYA)</strong><br>
+                    <strong>Orangutan:</strong> 54 &divide; 0.000004 = <strong>13,500,000 years ago (13.5 MYA)</strong><br><br>
+                    <strong>What this tells us:</strong> Chimpanzees and bonobos are equally distant from humans (both ~6 MYA). This means the human lineage split from the <em>chimpanzee-bonobo</em> lineage about 6 MYA, and chimps and bonobos diverged from <em>each other</em> more recently (about 1&ndash;2 MYA). The gorilla lineage branched off earlier (~8 MYA), and orangutans are the most distantly related living great ape (~13.5 MYA). These molecular estimates align well with the fossil record.
+                </div>
+            </div>
+
+            <button class="btn btn-amber" id="p1-reveal-btn" onclick="revealAnswer('p1')" style="margin-top: 10px;">Reveal Answer</button>
+        </div>
+
+        <!-- PROBLEM 2: CROSS-PHYLA -->
+        <div class="problem-card" id="problem-2">
+            <h3>Problem 2: Across the Animal Kingdom</h3>
+            <p>Molecular clocks are not limited to primates. They can estimate divergence times across vastly different animal groups&mdash;even across different <strong>phyla</strong>.</p>
+
+            <div class="info-box purple">
+                <strong>Scenario:</strong> Researchers have sequenced a <strong>500 bp</strong> segment of a highly conserved gene (the 18S ribosomal RNA gene) from a human and several other animal species. Because this gene is under strong selective pressure and changes slowly, its calibrated mutation rate is much lower: <strong>5 &times; 10<sup>-10</sup> mutations per bp per year</strong> (half the rate in Problem 1). The observed differences from the human sequence are:
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr><th>Species</th><th>Phylum</th><th>Differences from Human (out of 500 bp)</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Chicken</td><td>Chordata (Vertebrate)</td><td>15</td></tr>
+                    <tr><td>Fruit Fly (<em>Drosophila</em>)</td><td>Arthropoda (Insect)</td><td>30</td></tr>
+                    <tr><td>Garden Snail</td><td>Mollusca</td><td>27</td></tr>
+                    <tr><td>Sea Urchin</td><td>Echinodermata</td><td>25</td></tr>
+                </tbody>
+            </table>
+
+            <p><strong>Calculate the estimated divergence time for each species from humans. Then rank them from most recent to most distant common ancestor.</strong></p>
+
+            <div class="calc-step">
+                <label>Chicken: Divergence time (years ago)</label>
+                <input type="text" id="p2-chicken" placeholder="Your answer">
+            </div>
+            <div class="calc-step">
+                <label>Fruit Fly: Divergence time (years ago)</label>
+                <input type="text" id="p2-fly" placeholder="Your answer">
+            </div>
+            <div class="calc-step">
+                <label>Garden Snail: Divergence time (years ago)</label>
+                <input type="text" id="p2-snail" placeholder="Your answer">
+            </div>
+            <div class="calc-step">
+                <label>Sea Urchin: Divergence time (years ago)</label>
+                <input type="text" id="p2-urchin" placeholder="Your answer">
+            </div>
+
+            <p style="margin-top:15px;"><strong>Rank the species from most recently diverged to most distantly diverged from humans. Does the ranking surprise you? Why might the sea urchin (Echinodermata) be more closely related to humans than the fruit fly (Arthropoda)?</strong></p>
+            <textarea id="p2-explain" placeholder="Write your reasoning and ranking here..."></textarea>
+
+            <div style="margin-top: 12px;">
+                <button class="btn btn-success" onclick="checkProblem2()">Check My Answers</button>
+                <button class="hint-btn" onclick="toggleHint('p2-hint-1')">Hint 1</button>
+                <button class="hint-btn" onclick="toggleHint('p2-hint-2')">Hint 2</button>
+                <button class="hint-btn" onclick="toggleHint('p2-hint-3')">Hint 3</button>
+            </div>
+
+            <div class="hint-content" id="p2-hint-1">
+                <strong>Hint 1:</strong> The formula is the same: Divergence Time = Differences &divide; (2 &times; Rate &times; Length). But note the different rate (5 &times; 10<sup>-10</sup>) and length (500 bp).
+            </div>
+            <div class="hint-content" id="p2-hint-2">
+                <strong>Hint 2:</strong> The denominator is: 2 &times; (5 &times; 10<sup>-10</sup>) &times; 500 = 5 &times; 10<sup>-7</sup> = 0.0000005. Divide each species' differences by this value.
+            </div>
+            <div class="hint-content" id="p2-hint-3">
+                <strong>Hint 3:</strong> For chicken: 15 &divide; 0.0000005 = 30,000,000 years. Think about deuterostomes vs. protostomes. Echinoderms (sea urchins) are <em>deuterostomes</em>, like vertebrates, while insects and mollusks are <em>protostomes</em>. This is a major split in the animal family tree!
+            </div>
+
+            <div class="feedback" id="p2-fb"></div>
+
+            <div class="answer-reveal" id="p2-answer">
+                <div class="info-box green">
+                    <strong>Answers:</strong><br>
+                    Denominator = 2 &times; (5 &times; 10<sup>-10</sup>) &times; 500 = 5 &times; 10<sup>-7</sup><br><br>
+                    <strong>Chicken:</strong> 15 &divide; 5 &times; 10<sup>-7</sup> = <strong>30,000,000 years ago (30 MYA)</strong> *<br>
+                    <strong>Sea Urchin:</strong> 25 &divide; 5 &times; 10<sup>-7</sup> = <strong>50,000,000 years ago (50 MYA)</strong> *<br>
+                    <strong>Garden Snail:</strong> 27 &divide; 5 &times; 10<sup>-7</sup> = <strong>54,000,000 years ago (54 MYA)</strong> *<br>
+                    <strong>Fruit Fly:</strong> 30 &divide; 5 &times; 10<sup>-7</sup> = <strong>60,000,000 years ago (60 MYA)</strong> *<br><br>
+                    <em>* Note: These are simplified estimates for this exercise. Actual divergence times between these phyla (estimated using extensive genomic data and multiple calibration points) are much deeper&mdash;hundreds of millions of years. The gene and rate used here are hypothetical for pedagogical purposes, but the <strong>relative ranking</strong> is what matters for understanding the method.</em><br><br>
+                    <strong>Ranking (most recent to most distant):</strong> Chicken &rarr; Sea Urchin &rarr; Garden Snail &rarr; Fruit Fly<br><br>
+                    <strong>Why sea urchins are closer to humans than flies:</strong> This surprises many students! It comes down to a fundamental split in animal evolution. Humans and sea urchins are both <strong>deuterostomes</strong> (the blastopore becomes the anus during development), while fruit flies and snails are <strong>protostomes</strong> (the blastopore becomes the mouth). The deuterostome/protostome split occurred deep in evolutionary history, meaning sea urchins share a more recent common ancestor with us than insects do, despite looking nothing like us.
+                </div>
+            </div>
+
+            <button class="btn btn-amber" id="p2-reveal-btn" onclick="revealAnswer('p2')" style="margin-top: 10px;">Reveal Answer</button>
+        </div>
+
+        <div class="section-nav">
+            <button class="btn btn-outline" onclick="showSection(1)">&larr; Guided Lesson</button>
+            <button class="btn btn-primary" onclick="showSection(3)">AP/IB Concept Check &rarr;</button>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- SECTION 3: AP/IB CONCEPT CHECK               -->
+    <!-- ============================================ -->
+    <div class="section" id="section-3">
+        <h2>AP/IB Style Concept Check</h2>
+        <p>Test your understanding with these exam-style questions. Select your answer and check it&mdash;explanations are provided.</p>
+
+        <!-- Q1 -->
+        <div class="quiz-question" id="quiz-q1">
+            <p class="q-text">1. A scientist wants to construct a molecular clock to estimate the divergence of several mammal species over the last 20 million years. Which type of DNA sequence would provide the most reliable data?</p>
+            <div class="radio-group">
+                <label><input type="radio" name="q1" value="A"> A) The exons of an essential gene like actin, because its function is critical to survival.</label>
+                <label><input type="radio" name="q1" value="B"> B) A pseudogene that is no longer transcribed, because it can accumulate mutations without selective pressure.</label>
+                <label><input type="radio" name="q1" value="C"> C) The gene for ribosomal RNA (rRNA), because it is highly conserved across all life.</label>
+                <label><input type="radio" name="q1" value="D"> D) Mitochondrial DNA coding regions, because mitochondria evolve independently of the nucleus.</label>
+            </div>
+            <button class="btn btn-primary" onclick="checkQuiz(1, 'B')">Check Answer</button>
+            <div class="explanation" id="q1-exp"></div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="quiz-question" id="quiz-q2">
+            <p class="q-text">2. Two species are found to have 40 nucleotide differences in a 1,000 bp pseudogene. The mutation rate is 2 &times; 10<sup>-9</sup> per bp per year. What is the estimated time since their last common ancestor?</p>
+            <div class="radio-group">
+                <label><input type="radio" name="q2" value="A"> A) 5 million years ago</label>
+                <label><input type="radio" name="q2" value="B"> B) 10 million years ago</label>
+                <label><input type="radio" name="q2" value="C"> C) 20 million years ago</label>
+                <label><input type="radio" name="q2" value="D"> D) 40 million years ago</label>
+            </div>
+            <button class="btn btn-primary" onclick="checkQuiz(2, 'B')">Check Answer</button>
+            <div class="explanation" id="q2-exp"></div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="quiz-question" id="quiz-q3">
+            <p class="q-text">3. Species X and Species Y have 100 nucleotide differences in a neutral DNA sequence. Species X and Species Z have 60 differences in the same sequence. Which conclusion is best supported?</p>
+            <div class="radio-group">
+                <label><input type="radio" name="q3" value="A"> A) Species Y evolved faster than Species Z.</label>
+                <label><input type="radio" name="q3" value="B"> B) Species X and Species Z share a more recent common ancestor than Species X and Species Y.</label>
+                <label><input type="radio" name="q3" value="C"> C) Species Y has a longer generation time than Species Z.</label>
+                <label><input type="radio" name="q3" value="D"> D) Species Z is more likely to be the ancestor of Species X.</label>
+            </div>
+            <button class="btn btn-primary" onclick="checkQuiz(3, 'B')">Check Answer</button>
+            <div class="explanation" id="q3-exp"></div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="quiz-question" id="quiz-q4">
+            <p class="q-text">4. A molecular clock analysis reveals that humans and chimpanzees diverged approximately 6 million years ago, while humans and orangutans diverged approximately 14 million years ago. A student concludes that orangutans must have accumulated more than twice as many mutations as chimpanzees in the same gene region. Is this reasoning correct?</p>
+            <div class="radio-group">
+                <label><input type="radio" name="q4" value="A"> A) Yes, because more time means proportionally more mutations in a molecular clock.</label>
+                <label><input type="radio" name="q4" value="B"> B) No, because the molecular clock measures total divergence, so you must account for mutations on both lineages.</label>
+                <label><input type="radio" name="q4" value="C"> C) No, because orangutans have a slower metabolic rate and therefore a slower mutation rate.</label>
+                <label><input type="radio" name="q4" value="D"> D) Yes, but only if the gene region is a pseudogene under no selective pressure.</label>
+            </div>
+            <button class="btn btn-primary" onclick="checkQuiz(4, 'A')">Check Answer</button>
+            <div class="explanation" id="q4-exp"></div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="quiz-question" id="quiz-q5">
+            <p class="q-text">5. Allan Wilson and Vincent Sarich's 1967 molecular clock study of primate albumin proteins was controversial because:</p>
+            <div class="radio-group">
+                <label><input type="radio" name="q5" value="A"> A) It suggested that DNA mutates at a constant rate, which contradicted the neutral theory.</label>
+                <label><input type="radio" name="q5" value="B"> B) It estimated humans and African apes diverged ~5 MYA, much more recently than the 15&ndash;25 MYA most anthropologists accepted at the time.</label>
+                <label><input type="radio" name="q5" value="C"> C) It proved that protein sequences could not be used to measure evolutionary time.</label>
+                <label><input type="radio" name="q5" value="D"> D) It showed that humans are more closely related to orangutans than to chimpanzees.</label>
+            </div>
+            <button class="btn btn-primary" onclick="checkQuiz(5, 'B')">Check Answer</button>
+            <div class="explanation" id="q5-exp"></div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="quiz-question" id="quiz-q6">
+            <p class="q-text">6. A researcher compares the same neutral DNA sequence across three species pairs and obtains the following data:</p>
+            <table class="data-table" style="max-width: 500px;">
+                <thead><tr><th>Species Pair</th><th>Differences (1,000 bp)</th></tr></thead>
+                <tbody>
+                    <tr><td>Human vs. Chimpanzee</td><td>12</td></tr>
+                    <tr><td>Human vs. Dog</td><td>150</td></tr>
+                    <tr><td>Human vs. Frog</td><td>300</td></tr>
+                </tbody>
+            </table>
+            <p class="q-text" style="margin-top: 10px;">Which statement about this data is most accurate?</p>
+            <div class="radio-group">
+                <label><input type="radio" name="q6" value="A"> A) The frog is evolving faster than the dog.</label>
+                <label><input type="radio" name="q6" value="B"> B) The human-chimpanzee divergence is most recent; the human-frog divergence is most ancient.</label>
+                <label><input type="radio" name="q6" value="C"> C) The dog must be more closely related to the frog than to the chimpanzee.</label>
+                <label><input type="radio" name="q6" value="D"> D) These data cannot be used to estimate divergence because the species are too distantly related.</label>
+            </div>
+            <button class="btn btn-primary" onclick="checkQuiz(6, 'B')">Check Answer</button>
+            <div class="explanation" id="q6-exp"></div>
+        </div>
+
+        <div id="quiz-score" style="display:none; margin-top: 20px;"></div>
+
+        <!-- COPY ANSWERS SECTION -->
+        <div style="margin-top: 40px; padding-top: 25px; border-top: 3px solid #1565c0;">
+            <h3 style="margin-top: 0;">Copy Your Answers for Google Classroom</h3>
+            <p>Click the button below to compile all of your practice problem answers and quiz responses into a copyable format. You can then paste them into a Google Doc for submission.</p>
+            <button class="btn btn-copy" onclick="compileAnswers()">Compile My Answers</button>
+            <div class="copy-area" id="copy-area" style="display:none;"></div>
+            <button class="btn btn-copy" id="copy-btn" onclick="copyToClipboard()" style="display:none; margin-top: 8px;">Copy to Clipboard</button>
+            <div class="copy-success" id="copy-success">Copied to clipboard!</div>
+        </div>
+
+        <div class="section-nav">
+            <button class="btn btn-outline" onclick="showSection(2)">&larr; Practice Problems</button>
+            <button class="btn btn-outline" onclick="showSection(0)">&larr; Introduction</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- ============================================ -->
+<!-- JAVASCRIPT                                    -->
+<!-- ============================================ -->
+<script>
+// ---- Navigation ----
+const sections = document.querySelectorAll('.section');
+const tabs = document.querySelectorAll('.nav-tab');
+
+function showSection(index) {
+    sections.forEach(s => s.classList.remove('active'));
+    tabs.forEach(t => t.classList.remove('active'));
+    sections[index].classList.add('active');
+    tabs[index].classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ---- Guided Lesson Logic ----
+let lessonStepsCompleted = 0;
+
+function checkLessonStep(step) {
+    if (step === 1) {
+        const diffs = document.getElementById('ls1-diffs').value.trim();
+        const length = document.getElementById('ls1-length').value.trim();
+        const rate = document.getElementById('ls1-rate').value.trim().toLowerCase().replace(/\s/g, '');
+        const fb = document.getElementById('ls1-fb');
+
+        const validDiffs = (diffs === '16');
+        const validLength = (length === '1000' || length === '1,000');
+        const validRate = (rate === '1e-9' || rate === '1x10^-9' || rate === '1*10^-9' || rate === '0.000000001' || rate === '10^-9' || rate === '1x10-9');
+
+        if (validDiffs && validLength && validRate) {
+            fb.textContent = 'Correct! You have identified all three given values. Now let\'s use them.';
+            fb.className = 'feedback correct';
+            unlockStep(2);
+            document.getElementById('lesson-step-1').classList.add('correct');
+            updateProgress(1);
+        } else {
+            let msg = 'Not quite. Check: ';
+            if (!validDiffs) msg += 'Number of differences should be 16. ';
+            if (!validLength) msg += 'Sequence length should be 1000. ';
+            if (!validRate) msg += 'Mutation rate should be 1e-9 (or 0.000000001). ';
+            fb.textContent = msg;
+            fb.className = 'feedback incorrect';
+        }
+    }
+    else if (step === 2) {
+        const ans = document.getElementById('ls2-answer').value.trim().toLowerCase().replace(/,/g, '').replace(/\s/g, '');
+        const fb = document.getElementById('ls2-fb');
+        const valid = (ans === '1e-6' || ans === '0.000001' || ans === '1x10^-6' || ans === '1*10^-6' || ans === '10^-6' || ans === '0.0000010' || ans === '1x10-6');
+
+        if (valid) {
+            fb.textContent = 'Correct! The sequence rate is 1 \u00d7 10\u207b\u2076 mutations per sequence per year (or 0.000001).';
+            fb.className = 'feedback correct';
+            unlockStep(3);
+            document.getElementById('lesson-step-2').classList.add('correct');
+            updateProgress(2);
+        } else {
+            fb.textContent = 'Not quite. Multiply: (1 \u00d7 10\u207b\u2079) \u00d7 1,000 = ? Think about what happens to the exponent when you multiply by 1,000.';
+            fb.className = 'feedback incorrect';
+        }
+    }
+    else if (step === 3) {
+        const ans = document.getElementById('ls3-answer').value.trim().replace(/,/g, '').replace(/\s/g, '');
+        const fb = document.getElementById('ls3-fb');
+        const valid = (ans === '16000000' || ans === '1.6e7' || ans === '1.6x10^7' || ans === '16e6');
+
+        if (valid) {
+            fb.textContent = 'Correct! Total divergence time is 16,000,000 years. But remember\u2014this covers BOTH lineages.';
+            fb.className = 'feedback correct';
+            unlockStep(4);
+            document.getElementById('lesson-step-3').classList.add('correct');
+            updateProgress(3);
+        } else {
+            fb.textContent = 'Not quite. Divide: 16 \u00f7 0.000001 = 16,000,000. (When you divide by a very small number, you get a very large number.)';
+            fb.className = 'feedback incorrect';
+        }
+    }
+    else if (step === 4) {
+        const selected = document.querySelector('input[name="ls4-op"]:checked');
+        const fb = document.getElementById('ls4-fb');
+
+        if (!selected) {
+            fb.textContent = 'Please select an option.';
+            fb.className = 'feedback info';
+            return;
         }
 
-        function resetApp() {
-            currentSpeciesIndex = 0;
-            // Reset workbench screen to the first species
-            const firstSpecies = speciesData[0];
-            document.getElementById('species-title').innerText = `Species 1 of 3: ${firstSpecies.name}`;
-            document.getElementById('species-data').innerHTML = `After aligning the 1,000 bp sequences, you found <strong>${firstSpecies.mutations} mutations</strong> between the human and ${firstSpecies.name} genes.`;
-            document.getElementById('mutation_count_label').innerText = firstSpecies.mutations;
-
-            // Clear all inputs on workbench
-            document.getElementById('calc_step1').value = '';
-            document.getElementById('calc_step2').value = '';
-            document.getElementById('calc_step3').value = '';
-            document.getElementById('calc_step4').value = '';
-            const checkedRadioCalc = document.querySelector('input[name="step4_op"]:checked');
-            if(checkedRadioCalc) checkedRadioCalc.checked = false;
-            document.getElementById('feedback-calc').style.display = 'none';
-            document.getElementById('nextSpeciesButton').style.display = 'none';
-
-            // Clear all inputs on cladogram screen
-            document.getElementById('branchA').value = '';
-            document.getElementById('branchB').value = '';
-            document.getElementById('branchC').value = '';
-            document.getElementById('explanation-box').value = '';
-            document.getElementById('feedback-final').style.display = 'none';
-
-            // Clear all inputs on concept check screen
-            const q1Radio = document.querySelector('input[name="q1"]:checked');
-            if(q1Radio) q1Radio.checked = false;
-            const q2Radio = document.querySelector('input[name="q2"]:checked');
-            if(q2Radio) q2Radio.checked = false;
-            document.getElementById('q1_explanation').style.display = 'none';
-            document.getElementById('q2_explanation').style.display = 'none';
-
-            // Finally, show the first screen
-            showScreen('screen1');
+        if (selected.value === 'divide') {
+            fb.textContent = 'Correct! Since mutations accumulate on BOTH branches after the split, you divide by 2 to find the time back to the single common ancestor.';
+            fb.className = 'feedback correct';
+            unlockStep(5);
+            document.getElementById('lesson-step-4').classList.add('correct');
+            updateProgress(4);
+        } else {
+            fb.textContent = 'Not quite. Think about it: after two species split, mutations accumulate independently on BOTH lineages. The total differences represent changes on both branches, so you need to divide by 2.';
+            fb.className = 'feedback incorrect';
         }
-        
-        // --- Screen 2 Logic ---
-        function checkCalculation() {
-            const currentSpecies = speciesData[currentSpeciesIndex];
-            const feedbackEl = document.getElementById('feedback-calc');
+    }
+    else if (step === 5) {
+        const ans = document.getElementById('ls5-answer').value.trim().replace(/,/g, '').replace(/\s/g, '');
+        const fb = document.getElementById('ls5-fb');
+        const valid = (ans === '8000000' || ans === '8e6' || ans === '8x10^6' || ans === '8million' || ans === '8,000,000');
 
-            const ans1 = document.getElementById('calc_step1').value.replace('0.000001', '1e-6').toLowerCase();
-            const ans2 = document.getElementById('calc_step2').value.replace(/,/g, '');
-            const ans3 = document.getElementById('calc_step3').value.replace(/,/g, '');
-            const ans4_radio = document.querySelector('input[name="step4_op"]:checked');
-            const ans4 = document.getElementById('calc_step4').value.replace(/,/g, '').replace(' MYA', '');
-
-            if (ans1 == currentSpecies.step1 && ans2 == currentSpecies.step2 && ans3 == currentSpecies.step3 && ans4_radio && ans4_radio.value === 'divide' && ans4 == currentSpecies.step4) {
-                feedbackEl.innerHTML = `<strong class="font-bold">Correct!</strong> The common ancestor with the ${currentSpecies.name} lived <strong>${parseInt(currentSpecies.step4).toLocaleString()}</strong> years ago.`;
-                feedbackEl.className = 'mt-4 p-4 rounded-md bg-green-100 text-green-800 border border-green-200';
-                feedbackEl.style.display = 'block';
-                document.getElementById('nextSpeciesButton').style.display = 'inline-block';
-            } else {
-                feedbackEl.innerHTML = "<strong class='font-bold'>Not quite.</strong> One or more of your calculations are incorrect. Please review your steps and try again.";
-                feedbackEl.className = 'mt-4 p-4 rounded-md bg-red-100 text-red-800 border border-red-200';
-                feedbackEl.style.display = 'block';
-                document.getElementById('nextSpeciesButton').style.display = 'none';
-            }
+        if (valid) {
+            fb.textContent = 'Correct! The estimated time to the last common ancestor of humans and gorillas is 8,000,000 years (8 MYA).';
+            fb.className = 'feedback correct';
+            document.getElementById('lesson-step-5').classList.add('correct');
+            document.getElementById('lesson-complete').style.display = 'block';
+            updateProgress(5);
+            tabs[1].classList.add('completed');
+        } else {
+            fb.textContent = 'Not quite. Take the total divergence (16,000,000) and divide by 2: 16,000,000 \u00f7 2 = 8,000,000 years.';
+            fb.className = 'feedback incorrect';
         }
+    }
+}
 
-        function nextSpecies() {
-            currentSpeciesIndex++;
-            
-            if (currentSpeciesIndex < speciesData.length) {
-                const newSpecies = speciesData[currentSpeciesIndex];
-                document.getElementById('species-title').innerText = `Species ${currentSpeciesIndex + 1} of 3: ${newSpecies.name}`;
-                document.getElementById('species-data').innerHTML = `After aligning the 1,000 bp sequences, you found <strong>${newSpecies.mutations} mutations</strong> between the human and ${newSpecies.name} genes.`;
-                document.getElementById('mutation_count_label').innerText = newSpecies.mutations;
+function unlockStep(stepNum) {
+    const el = document.getElementById('lesson-step-' + stepNum);
+    el.style.opacity = '1';
+    el.style.pointerEvents = 'auto';
+}
 
-                document.getElementById('calc_step1').value = '';
-                document.getElementById('calc_step2').value = '';
-                document.getElementById('calc_step3').value = '';
-                document.getElementById('calc_step4').value = '';
-                const checkedRadio = document.querySelector('input[name="step4_op"]:checked');
-                if(checkedRadio) checkedRadio.checked = false;
+function updateProgress(stepsComplete) {
+    lessonStepsCompleted = stepsComplete;
+    const pct = (stepsComplete / 5) * 100;
+    document.getElementById('lesson-progress').style.width = pct + '%';
+}
 
-                document.getElementById('feedback-calc').style.display = 'none';
-                document.getElementById('nextSpeciesButton').style.display = 'none';
-            } else {
-                showScreen('screen3');
-            }
+// ---- Hint System ----
+function toggleHint(id) {
+    const el = document.getElementById(id);
+    el.classList.toggle('visible');
+}
+
+// ---- Practice Problem 1 ----
+function checkProblem1() {
+    const answers = {
+        chimp: document.getElementById('p1-chimp').value.trim().replace(/,/g, '').replace(/\s/g, ''),
+        bonobo: document.getElementById('p1-bonobo').value.trim().replace(/,/g, '').replace(/\s/g, ''),
+        gorilla: document.getElementById('p1-gorilla').value.trim().replace(/,/g, '').replace(/\s/g, ''),
+        orangutan: document.getElementById('p1-orangutan').value.trim().replace(/,/g, '').replace(/\s/g, '')
+    };
+    const correct = {
+        chimp: '6000000',
+        bonobo: '6000000',
+        gorilla: '8000000',
+        orangutan: '13500000'
+    };
+    const fb = document.getElementById('p1-fb');
+
+    let allCorrect = true;
+    let details = [];
+
+    for (let key of Object.keys(correct)) {
+        const el = document.getElementById('p1-' + (key === 'chimp' ? 'chimp' : key)).closest('.calc-step');
+        if (answers[key] === correct[key]) {
+            el.classList.remove('incorrect');
+            el.classList.add('correct');
+        } else {
+            el.classList.remove('correct');
+            el.classList.add('incorrect');
+            allCorrect = false;
+            details.push(key.charAt(0).toUpperCase() + key.slice(1));
         }
+    }
 
-        // --- Screen 3 Logic ---
-        function checkCladogram() {
-            const feedbackEl = document.getElementById('feedback-final');
-            const ansA = document.getElementById('branchA').value;
-            const ansB = document.getElementById('branchB').value;
-            const ansC = document.getElementById('branchC').value;
-            const explanation = document.getElementById('explanation-box').value;
+    if (allCorrect) {
+        fb.innerHTML = '<strong>All calculations are correct!</strong> Make sure you\'ve written your explanation about what the chimp/bonobo results tell us.';
+        fb.className = 'feedback correct';
+    } else {
+        fb.innerHTML = '<strong>Not all answers are correct.</strong> Check: ' + details.join(', ') + '. Remember: Divergence Time = Differences \u00f7 (2 \u00d7 Rate \u00d7 Length). The denominator here is 2 \u00d7 (1\u00d710<sup>-9</sup>) \u00d7 2,000 = 0.000004.';
+        fb.className = 'feedback incorrect';
+    }
+}
 
-            if (ansA === 'Tamarin' && ansB === 'Lemur' && ansC === 'Dog') {
-                if (explanation.length < 30) {
-                     feedbackEl.innerHTML = "<strong class='font-bold'>Labels are correct!</strong> Now, please write a full explanation for your reasoning in the text box.";
-                     feedbackEl.className = 'mt-4 p-4 rounded-md bg-yellow-100 text-yellow-800 border border-yellow-200';
-                } else {
-                    feedbackEl.innerHTML = "<strong class='font-bold'>Lab Complete!</strong> Your cladogram is correct and your reasoning is sound. The Golden Tamarin had the <strong>fewest mutations</strong>, so it is our <strong>closest relative</strong> (most recent common ancestor). The Dog had the <strong>most mutations</strong>, making it the <strong>most distant relative</strong> of the group.";
-                    feedbackEl.className = 'mt-4 p-4 rounded-md bg-green-100 text-green-800 border border-green-200';
-                }
-            } else {
-                feedbackEl.innerHTML = "<strong class='font-bold'>Labels are incorrect.</strong> Check your divergence dates again. The species with the most recent common ancestor should have the *fewest* mutations.";
-                feedbackEl.className = 'mt-4 p-4 rounded-md bg-red-100 text-red-800 border border-red-200';
-            }
-             feedbackEl.style.display = 'block';
+// ---- Practice Problem 2 ----
+function checkProblem2() {
+    const answers = {
+        chicken: document.getElementById('p2-chicken').value.trim().replace(/,/g, '').replace(/\s/g, ''),
+        fly: document.getElementById('p2-fly').value.trim().replace(/,/g, '').replace(/\s/g, ''),
+        snail: document.getElementById('p2-snail').value.trim().replace(/,/g, '').replace(/\s/g, ''),
+        urchin: document.getElementById('p2-urchin').value.trim().replace(/,/g, '').replace(/\s/g, '')
+    };
+    const correct = {
+        chicken: '30000000',
+        fly: '60000000',
+        snail: '54000000',
+        urchin: '50000000'
+    };
+    const fb = document.getElementById('p2-fb');
+
+    let allCorrect = true;
+    let details = [];
+    const ids = { chicken: 'p2-chicken', fly: 'p2-fly', snail: 'p2-snail', urchin: 'p2-urchin' };
+
+    for (let key of Object.keys(correct)) {
+        const el = document.getElementById(ids[key]).closest('.calc-step');
+        if (answers[key] === correct[key]) {
+            el.classList.remove('incorrect');
+            el.classList.add('correct');
+        } else {
+            el.classList.remove('correct');
+            el.classList.add('incorrect');
+            allCorrect = false;
+            details.push(key.charAt(0).toUpperCase() + key.slice(1));
         }
-        
-        // --- Screen 4 Logic ---
-        const explanations = {
-            q1: {
-                correct: "<strong>Correct!</strong> A pseudogene is the best choice because it is the most selectively neutral. Mutations can accumulate at a steady, predictable rate without being removed by natural selection, making it an excellent molecular clock.",
-                incorrect: "<strong>Not quite.</strong> While introns (D) are also good candidates, pseudogenes (B) are considered the 'gold standard' for neutrality. Exons (A) are under strong selection, and rRNA (C) changes far too slowly for this timescale. The correct choice is B because pseudogenes are almost completely free from natural selection."
-            },
-            q2: {
-                correct: "<strong>Correct!</strong> The number of differences reflects the time since divergence. Species A has the fewest differences (4), meaning it diverged most recently and is therefore the most closely related to the common ancestor. Species B has the most differences (28), meaning it is the most distantly related.",
-                incorrect: "<strong>Incorrect.</strong> Remember that the molecular clock assumes a roughly constant *rate* of mutation. Therefore, more differences implies more time has passed since divergence. The species with the *fewest* differences is the most closely related (C). Choice D is incorrect because the data doesn't provide information about the rate, only the accumulated number of changes."
-            }
-        };
+    }
 
-        function checkQuestion(qNum, correctAns) {
-            const selected = document.querySelector(`input[name="q${qNum}"]:checked`);
-            const explanationEl = document.getElementById(`q${qNum}_explanation`);
-            
-            if (!selected) {
-                explanationEl.innerHTML = "Please select an answer first.";
-                explanationEl.style.display = 'block';
-                return;
-            }
+    if (allCorrect) {
+        fb.innerHTML = '<strong>All calculations are correct!</strong> Make sure you\'ve explained the ranking and the deuterostome/protostome connection.';
+        fb.className = 'feedback correct';
+    } else {
+        fb.innerHTML = '<strong>Not all answers are correct.</strong> Check: ' + details.join(', ') + '. Remember: Divergence Time = Differences \u00f7 (2 \u00d7 Rate \u00d7 Length). The denominator here is 2 \u00d7 (5\u00d710<sup>-10</sup>) \u00d7 500 = 5\u00d710<sup>-7</sup> = 0.0000005.';
+        fb.className = 'feedback incorrect';
+    }
+}
 
-            if (selected.value === correctAns) {
-                explanationEl.innerHTML = explanations[`q${qNum}`].correct;
-            } else {
-                explanationEl.innerHTML = explanations[`q${qNum}`].incorrect;
-            }
-            explanationEl.style.display = 'block';
+// ---- Reveal Answer ----
+function revealAnswer(problemId) {
+    document.getElementById(problemId + '-answer').classList.add('visible');
+    document.getElementById(problemId + '-reveal-btn').style.display = 'none';
+}
+
+// ---- Quiz Logic ----
+const quizExplanations = {
+    1: {
+        correct: '<strong>Correct!</strong> Pseudogenes are the "gold standard" for molecular clock studies because they are no longer functional and thus under virtually no selective pressure. Mutations accumulate at a steady, predictable rate\u2014exactly what you need for a reliable clock.',
+        incorrect: '<strong>Not quite.</strong> The correct answer is <strong>B</strong>. Pseudogenes are ideal because they are non-functional and under almost no selective pressure. Exons (A) are under strong selection. rRNA (C) is too highly conserved for this timescale. Mitochondrial coding regions (D) are also under selection and have their own rate complications.'
+    },
+    2: {
+        correct: '<strong>Correct!</strong> Using the formula: T = 40 \u00f7 (2 \u00d7 2\u00d710<sup>-9</sup> \u00d7 1,000) = 40 \u00f7 0.000004 = 10,000,000 years = 10 MYA.',
+        incorrect: '<strong>Not quite.</strong> The correct answer is <strong>B (10 million years)</strong>. Apply the formula: T = Differences \u00f7 (2 \u00d7 Rate \u00d7 Length) = 40 \u00f7 (2 \u00d7 2\u00d710<sup>-9</sup> \u00d7 1,000) = 40 \u00f7 4\u00d710<sup>-6</sup> = 10,000,000 years. Don\'t forget to include the factor of 2 in the denominator!'
+    },
+    3: {
+        correct: '<strong>Correct!</strong> Fewer nucleotide differences means less time has passed since divergence (assuming a constant mutation rate). Since X and Z have only 60 differences (vs. 100 for X and Y), X and Z share a more recent common ancestor.',
+        incorrect: '<strong>Not quite.</strong> The correct answer is <strong>B</strong>. Under the molecular clock assumption, fewer differences = more recent divergence. Since X-Z (60 differences) have fewer differences than X-Y (100 differences), X and Z diverged more recently. We cannot conclude anything about differences in mutation rates (A) or generation times (C) from this data alone, and modern species are not ancestors of each other (D).'
+    },
+    4: {
+        correct: '<strong>Correct!</strong> Under the molecular clock assumption, the number of mutations is directly proportional to time. If the human-orangutan divergence (~14 MYA) is roughly 2.3 times the human-chimp divergence (~6 MYA), then you would expect roughly 2.3 times as many accumulated differences in the human-orangutan comparison\u2014more than twice as many. The factor of 2 for both lineages applies equally to both comparisons and cancels out when comparing ratios.',
+        incorrect: '<strong>Not quite.</strong> The correct answer is <strong>A</strong>. The molecular clock is fundamentally about proportionality: more time = proportionally more mutations. The "both lineages" factor (dividing by 2) is already accounted for in the divergence time estimates. Since 14 MYA is more than twice 6 MYA, you would indeed expect more than twice as many mutations in the orangutan comparison. Choice B describes a real consideration but doesn\'t actually change the conclusion here.'
+    },
+    5: {
+        correct: '<strong>Correct!</strong> Wilson and Sarich\'s molecular data indicated a much more recent human-ape split (~5 MYA) than the prevailing view based on fossils (15\u201325 MYA). This challenged the anthropological establishment and was initially met with strong resistance. It was later confirmed by fossil discoveries and DNA evidence.',
+        incorrect: '<strong>Not quite.</strong> The correct answer is <strong>B</strong>. Wilson and Sarich\'s 1967 study estimated the human-African ape divergence at approximately 5 million years ago, which was dramatically more recent than the 15\u201325 MYA accepted by most anthropologists based on fossil evidence. This challenged the established view and demonstrated the power of molecular data in evolutionary biology.'
+    },
+    6: {
+        correct: '<strong>Correct!</strong> Under the molecular clock, fewer differences indicate more recent divergence. Human-chimpanzee (12 differences) diverged most recently; human-frog (300 differences) diverged most long ago. The data are consistent with the known evolutionary tree: primates diverged recently, while the amphibian-mammal split is ancient.',
+        incorrect: '<strong>Not quite.</strong> The correct answer is <strong>B</strong>. The molecular clock principle is straightforward: more differences = more time since divergence. With 12 differences, the human-chimp pair diverged most recently. With 300 differences, the human-frog pair diverged most long ago. This doesn\'t mean frogs "evolve faster" (A)\u2014the differences reflect time, not rate. Dogs can still be more closely related to chimps than frogs (C is wrong). And the method works across distant relationships (D is wrong)\u2014that\'s exactly what conserved genes like rRNA are used for.'
+    }
+};
+
+let quizAnswered = {};
+
+function checkQuiz(qNum, correctAns) {
+    const selected = document.querySelector('input[name="q' + qNum + '"]:checked');
+    const expEl = document.getElementById('q' + qNum + '-exp');
+
+    if (!selected) {
+        expEl.innerHTML = 'Please select an answer first.';
+        expEl.className = 'explanation visible incorrect-exp';
+        return;
+    }
+
+    quizAnswered[qNum] = selected.value;
+
+    if (selected.value === correctAns) {
+        expEl.innerHTML = quizExplanations[qNum].correct;
+        expEl.className = 'explanation visible correct-exp';
+    } else {
+        expEl.innerHTML = quizExplanations[qNum].incorrect;
+        expEl.className = 'explanation visible incorrect-exp';
+    }
+
+    // Show score after all answered
+    const totalQuestions = 6;
+    if (Object.keys(quizAnswered).length === totalQuestions) {
+        let score = 0;
+        const correctAnswers = { 1: 'B', 2: 'B', 3: 'B', 4: 'A', 5: 'B', 6: 'B' };
+        for (let q in correctAnswers) {
+            if (quizAnswered[q] === correctAnswers[q]) score++;
         }
+        const scoreEl = document.getElementById('quiz-score');
+        scoreEl.style.display = 'block';
+        scoreEl.innerHTML = '<div class="info-box ' + (score >= 5 ? 'green' : score >= 3 ? 'amber' : 'red') + '"><strong>Quiz Score: ' + score + ' / ' + totalQuestions + '</strong>' + (score === totalQuestions ? ' \u2014 Perfect score!' : score >= 4 ? ' \u2014 Great work!' : ' \u2014 Review the explanations above and revisit the Introduction and Guided Lesson sections.') + '</div>';
+        tabs[3].classList.add('completed');
+    }
+}
 
-    </script>
+// ---- Compile Answers for Copy ----
+function compileAnswers() {
+    let text = '=== MOLECULAR CLOCK \u2014 STUDENT ANSWERS ===\n';
+    text += 'Date: ' + new Date().toLocaleDateString() + '\n\n';
+
+    // Practice Problem 1
+    text += '--- PRACTICE PROBLEM 1: THE GREAT APE FAMILY ---\n';
+    text += 'Chimpanzee divergence time: ' + (document.getElementById('p1-chimp').value || '(not answered)') + ' years ago\n';
+    text += 'Bonobo divergence time: ' + (document.getElementById('p1-bonobo').value || '(not answered)') + ' years ago\n';
+    text += 'Gorilla divergence time: ' + (document.getElementById('p1-gorilla').value || '(not answered)') + ' years ago\n';
+    text += 'Orangutan divergence time: ' + (document.getElementById('p1-orangutan').value || '(not answered)') + ' years ago\n';
+    text += 'Explanation: ' + (document.getElementById('p1-explain').value || '(not answered)') + '\n\n';
+
+    // Practice Problem 2
+    text += '--- PRACTICE PROBLEM 2: ACROSS THE ANIMAL KINGDOM ---\n';
+    text += 'Chicken divergence time: ' + (document.getElementById('p2-chicken').value || '(not answered)') + ' years ago\n';
+    text += 'Fruit Fly divergence time: ' + (document.getElementById('p2-fly').value || '(not answered)') + ' years ago\n';
+    text += 'Garden Snail divergence time: ' + (document.getElementById('p2-snail').value || '(not answered)') + ' years ago\n';
+    text += 'Sea Urchin divergence time: ' + (document.getElementById('p2-urchin').value || '(not answered)') + ' years ago\n';
+    text += 'Explanation/Ranking: ' + (document.getElementById('p2-explain').value || '(not answered)') + '\n\n';
+
+    // Quiz
+    text += '--- AP/IB CONCEPT CHECK ---\n';
+    const correctAnswers = { 1: 'B', 2: 'B', 3: 'B', 4: 'A', 5: 'B', 6: 'B' };
+    let quizScore = 0;
+    for (let i = 1; i <= 6; i++) {
+        const sel = document.querySelector('input[name="q' + i + '"]:checked');
+        const ans = sel ? sel.value : '(not answered)';
+        const isCorrect = sel && sel.value === correctAnswers[i];
+        if (isCorrect) quizScore++;
+        text += 'Question ' + i + ': ' + ans + (sel ? (isCorrect ? ' (Correct)' : ' (Incorrect - correct answer: ' + correctAnswers[i] + ')') : '') + '\n';
+    }
+    text += 'Quiz Score: ' + quizScore + '/6\n';
+
+    document.getElementById('copy-area').textContent = text;
+    document.getElementById('copy-area').style.display = 'block';
+    document.getElementById('copy-btn').style.display = 'inline-block';
+}
+
+function copyToClipboard() {
+    const text = document.getElementById('copy-area').textContent;
+    navigator.clipboard.writeText(text).then(function() {
+        const successEl = document.getElementById('copy-success');
+        successEl.classList.add('visible');
+        setTimeout(function() {
+            successEl.classList.remove('visible');
+        }, 2500);
+    });
+}
+</script>
 
 </body>
 </html>
-
